@@ -57,7 +57,7 @@ def scrape_category(start_date: str, end_date: str):
                 # 擷取詳細頁連結
                 url_element = book.find_element(By.CSS_SELECTOR, "a")
                 raw_url = url_element.get_attribute("href")
-                book_url = raw_url.split("?")[0]  # ✅ 只取 ? 前面的內容
+                book_url = raw_url.split("?")[0]  # 只取 ? 前面的內容
                 # 擷取出版日期，假設位於 <li class="info"><span>出版日期：2025-04-09</span></li>
                 info_element = book.find_element(By.CSS_SELECTOR, "li.info span")
                 publish_text = info_element.text.strip()  # e.g. "出版日期：2025-04-09"
