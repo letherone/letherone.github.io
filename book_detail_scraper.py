@@ -16,9 +16,6 @@ HEADERS = {
 def parse_meta_description(meta_text: str) -> dict:
     """
     解析 meta 的 description，抽出書名、作者、出版社等資訊。
-    輸入範例：
-    "書名：千里江山圖，語言：繁體中文，ISBN：9789620455469，頁數：376，出版社：三聯，作者：孫甘露，出版日期：2025/04/09，類別：文學小說"
-    回傳字典內容僅包含書名、作者、出版社。
     """
     data = {}
     try:
@@ -36,7 +33,7 @@ def parse_meta_description(meta_text: str) -> dict:
 
 def fetch_url_with_retry(url: str, max_retries: int = 3, delay: int = 10, timeout: int = 30):
     """
-    帶有重試機制的請求，預設最多重試 3 次，每次失敗後等待 5 秒，並設定 timeout 時間。
+    帶有重試機制的請求，預設最多重試 3 次，每次失敗後等待 10 秒，並設定 timeout 時間。
     """
     for attempt in range(1, max_retries + 1):
         try:
