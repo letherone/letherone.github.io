@@ -16,6 +16,9 @@ HEADERS = {
 def parse_meta_description(meta_text: str) -> dict:
     """
     解析 meta 的 description，抽出書名、作者、出版社等資訊。
+    輸入範例：
+    "書名：千里江山圖，語言：繁體中文，ISBN：9789620455469，頁數：376，出版社：三聯，作者：孫甘露，出版日期：2025/04/09，類別：文學小說"
+    回傳字典內容僅包含書名、作者、出版社。
     """
     data = {}
     try:
@@ -25,6 +28,10 @@ def parse_meta_description(meta_text: str) -> dict:
                 data["書名"] = part.split("書名：")[-1].strip()
             elif "作者：" in part:
                 data["作者"] = part.split("作者：")[-1].strip()
+            elif "ISBN：" in part:
+                data["ISBN"] = part.split("ISBN：")[-1].strip()
+            elif "類別：" in part:
+                data["類別"] = part.split("類別：")[-1].strip()
             elif "出版社：" in part:
                 data["出版社"] = part.split("出版社：")[-1].strip()
     except Exception as e:
@@ -50,7 +57,7 @@ def scrape_books_from_urls(urls: list) -> list:
     """
     讀取來自分類頁傳入的書籍網址清單，每筆資料格式包含：
       - 書籍網址、出版日期（分類頁資訊）
-      - 書名、作者、出版社（來自 meta description）
+      - 書名、作者、出版社、ISBN、類別（來自 meta description）
       - 定價（ul.price > li em）
       - 優惠價（ul.price > li strong.price01 > b）
       
@@ -62,7 +69,7 @@ def scrape_books_from_urls(urls: list) -> list:
         publish_date = entry.get("publish_date")
         
         # 可在每次請求前加上隨機延遲，避免過快請求導致被封鎖
-        sleep_time = random.uniform(2, 60)
+        sleep_time = random.uniform(2, 50)
         print(f"【{idx+1}/{len(urls)}】等待 {sleep_time:.2f} 秒後開始處理 {url}")
         time.sleep(sleep_time)
 
@@ -95,6 +102,8 @@ def scrape_books_from_urls(urls: list) -> list:
                 "書名": meta_data.get("書名", ""),
                 "作者": meta_data.get("作者", ""),
                 "出版社": meta_data.get("出版社", ""),
+                "ISBN": meta_data.get("ISBN", ""),
+                "類別": meta_data.get("類別", ""),
                 "定價": price,
                 "優惠價": discount_price
             }
