@@ -8,6 +8,8 @@
 import os
 import csv
 import argparse
+import datetime
+
 
 from category_scraper import scrape_category
 from book_detail_scraper import scrape_books_from_urls
@@ -17,7 +19,7 @@ def save_books_to_csv(books: list, filepath: str):
     將書籍資料寫入 CSV 檔，欄位：
     書籍網址、出版日期、書名、作者、出版社、定價、優惠價
     """
-    fieldnames = ["書籍網址", "出版日期", "書名", "作者", "出版社", "類別", "定價", "優惠價"]
+    fieldnames = ["書籍網址", "出版日期", "書名", "作者", "出版社", "類別","ISBN",  "定價", "優惠價"]
     with open(filepath, "w", encoding="utf-8", newline="") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -26,8 +28,8 @@ def save_books_to_csv(books: list, filepath: str):
 
 def main():
     parser = argparse.ArgumentParser(description="博客來書籍爬蟲")
-    parser.add_argument("--start", type=str, default="2025-04-10", help="起始出版日期 (YYYY-MM-DD)")
-    parser.add_argument("--end", type=str, default="2025-04-14", help="結束出版日期 (YYYY-MM-DD)")
+    parser.add_argument("--start", type=str, default="2025-04-01", help="起始出版日期 (YYYY-MM-DD)")
+    parser.add_argument("--end", type=str, default="2025-04-01", help="結束出版日期 (YYYY-MM-DD)")
     args = parser.parse_args()
 
     # 第一步：抓取分類頁，取得有效書籍網址清單
@@ -40,7 +42,9 @@ def main():
 
     # 第三步：輸出到 CSV 檔案
     os.makedirs("output", exist_ok=True)
-    csv_filepath = os.path.join("output", "books.csv")
+    today_str = datetime.datetime.today().strftime("%Y-%m-%d")  #CSV檔名加上今日日期
+    csv_filename = f"books_{today_str}.csv"
+    csv_filepath = os.path.join("output", csv_filename)
     save_books_to_csv(books, csv_filepath)
     print(f"書籍資訊已儲存到 {csv_filepath}")
 
